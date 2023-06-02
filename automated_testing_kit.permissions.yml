@@ -1,0 +1,4 @@
+administer automated testing kit:
+  title: 'Administer Automated Testing Kit'
+  description: 'Modify configuration.'
+  restrict access: true

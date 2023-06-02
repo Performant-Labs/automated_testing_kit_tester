@@ -1,0 +1,28 @@
+<?php
+
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
+/**
+ * @file
+ * Contains automated_testing_kit.module.
+ */
+
+ /**
+ * Implements hook_help().
+ *
+ * @param $route_name
+ *
+ * @return string
+ */
+function automated_testing_kit_help($route_name) {
+  $output = '';
+  switch ($route_name) {
+    // Main module help.
+    case 'help.page.automated_testing_kit':
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Contains useful functions for end-to-end automated testing. See drupal.org/project/automated_testing_kit for documentation.') . '</p>';
+
+    default:
+  }
+  return $output;
+}

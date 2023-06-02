@@ -1,0 +1,7 @@
+automated_testing_kit.configuration_form:
+  path: '/admin/automated_testing_kit/configuration/edit'
+  defaults:
+    _form: '\Drupal\automated_testing_kit\Form\ConfigurationForm'
+    _title: 'Automated Testing Kit Configuration'
+  requirements:
+    _permission: 'administer automated testing kit'

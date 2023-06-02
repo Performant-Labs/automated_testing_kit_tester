@@ -1,0 +1,6 @@
+# Automated Testing Kit settings form
+automated_testing_kit.automated_testing_kit_settings:
+  title: 'Automated Testing Kit Configuration'
+  route_name: automated_testing_kit.configuration_form
+  description: 'Automated Testing Kit Configuration'
+  parent: automated_testing_kit.automated_testing_kit_controller

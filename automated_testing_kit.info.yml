@@ -1,0 +1,6 @@
+name: 'Automated Testing Kit'
+type: module
+description: 'Provides functions useful for automated testing.'
+core_version_requirement: ^9 || ^10
+package: 'Automated Testing Kit'
+configure: automated_testing_kit.configuration_form

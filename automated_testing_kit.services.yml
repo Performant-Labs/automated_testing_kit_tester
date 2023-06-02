@@ -1,0 +1,6 @@
+services:
+  automated_testing_kit.drush_commands:
+    class: \Drupal\automated_testing_kit\Commands\AutomatedTestingKitCommands
+    tags:
+      - { name: drush.command }
+    arguments: ['@entity_type.manager', '@logger.factory']
