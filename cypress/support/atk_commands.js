@@ -73,16 +73,16 @@ Cypress.Commands.add('deleteUserWithUserName', (userName) => {
 })
 
 /**
- * Convenience method to delete user given a user ID.
+ * Convenience method to delete user given a UID.
  *
- * @param userId String
+ * @param uid String
  */
-Cypress.Commands.add('deleteUserWithUserId', (userId) => {
-  const cmd = `user:cancel -y --delete-content --uid="${userId}"`
+Cypress.Commands.add('deleteUserWithUid', (uid) => {
+  const cmd = `user:cancel -y --delete-content --uid="${uid}"`
 
-  cy.log(`${userId}: Attempting to delete.`)
+  cy.log(`${uid}: Attempting to delete.`)
   cy.execDrush(cmd, false)   // False = ignore failed commands.
-  cy.log(`${userId}: User deleted successfully if present.`)
+  cy.log(`${uid}: User deleted successfully if present.`)
 })
 
 /**
@@ -168,9 +168,9 @@ Cypress.Commands.add("getDrushAlias", () => {
 })
 
 /**
- * Get Iframe Body
+ * Get Iframe body given an id.
  */
-Cypress.Commands.add('getIframeBody', (iframeId) => {
+Cypress.Commands.add('getIframeBodyWithId', (iframeId) => {
   // Get the iframe > document > body
   // and retry until the body element is not empty
   return cy
@@ -260,42 +260,31 @@ Cypress.Commands.add("logInViaPost", (account) => {
 })
 
 /**
+ * Log in with user:login given a user id.
+ * 
+ * @param uid - integer
+ */
+Cypress.Commands.add('loginViaUli', (uid) => {
+  if (uid == undefined) uid = 1
+  cy.makeDrushAlias().then(drushAlias => {
+    cy.exec(
+      `${drushAlias} user:login --uid=${uid}`, {failOnNonZeroExit: false}
+    ).then((result) => {
+      cy.visit(result);
+    })
+  })
+})
+
+
+
+/**
  * Log out user via the UI.
  */
-Cypress.Commands.add('logOutViaUI', () => {
+Cypress.Commands.add('logOutViaUi', () => {
   let logOutUrl = Cypress.config("automatedTesting").logoutUrl
 
   cy.visit(logoutUrl)
 })
-
-
-/**
- * Performs an HTTP request of specific type.
- *
- * @param url           Make HTTP request using browserAuthentication.
- */
-Cypress.Commands.add('makeHttpRequestWithAuthentication', (url, requestType) => {
-  return cy.request({
-    method: requestType,
-    url: url,
-    auth: {
-      username: Cypress.env('browserAuthentication').username,
-      password: Cypress.env('browserAuthentication').password,
-    },
-    failOnStatusCode: false,
-  }).then((response) => {
-    expect(response.status).to.eq(200)
-  })
-})
-
-/**
- * Parse Excel file.
- *
- * @param inputFile       Given a file, parse using XLS library.
- */
-Cypress.Commands.add('parseXlsx', (inputFile) => {
-  return cy.task('parseXlsx', { filePath: inputFile })
-});
 
 /**
  * Prepare for test run.

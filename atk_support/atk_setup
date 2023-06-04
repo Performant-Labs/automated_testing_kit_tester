@@ -59,7 +59,30 @@ else
 fi
 
 #
-# Tests
+# Copy ATK support files to the project root.
+#
+
+# Loop over the output of the find command looking
+# for just ATK support files.
+ATK_SUPPORT_FILE_SOURCE_DIR = atk_support
+for SUPPORT_FILE in $(find "$ATK_SUPPORT_FILE_SOURCE_DIR" -type f); do
+  SUPPORT_FILES+=("$SUPPORT_FILE")
+done
+
+echo "Support file destination directory is <project_root>."
+for SUPPORT_FILE in "${SUPPORT_FILES[@]}"; do
+  if (( $DO_LINK == 0 )); then
+    echo "Copying $PWD/$SUPPORT_FILE."
+    cp -R $FIXTURE $SUPPORT_FILE_DESTINATION_DIR
+  else
+    echo "Linking $PWD/$SUPPORT_FILE."
+    SUPPORT_FILE_BASENAME=$(basename "$SUPPORT_FILE")
+    ln -s "$PWD/$SUPPORT_FILE" "$PWD"
+  fi
+done
+
+#
+# Copy or link framework tests.
 #
 
 TESTS=()
@@ -84,7 +107,7 @@ for TEST in "${TESTS[@]}"; do
 done
 
 #
-# Fixtures
+# Copy or link fixtures.
 #
 
 # Loop over the output of the find command looking
@@ -106,7 +129,7 @@ for FIXTURE in "${FIXTURES[@]}"; do
 done
 
 #
-# Support files
+# Copy or link testing framework support files.
 #
 
 # Loop over the output of the find command looking

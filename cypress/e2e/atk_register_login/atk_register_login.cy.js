@@ -1,20 +1,27 @@
+//
+// atk_register_login.cy.js
+//
+// Registration, login and forgotten password tests.
+
 /// <reference types="Cypress" />
 
-import * as at_utilities from '../../support/atk_utilities.js'
-import * as at_commands from '../../support/atk_commands.js'
+import * as atk_utilities from '../../support/atk_utilities.js'
+import * as atk_commands from '../../support/atk_commands.js'
 
 const userEtherealAccount = require("../../../fixtures/etherealUser.json")
 const qaUserAccounts = require("../../../fixtures/qaUsers.json")
 
-describe('User registration and login tasks.', () => {
+describe('(ATK-1000) User registration and login tasks.', () => {
   //
   // Register the Ethereal user and confirm email reaches Ethereal.
   //
-  it.skip("(AT-1000) Register with form and confirm email with Ethereal.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
+  it.skip("(ATK-1000) Register with form and confirm email with Ethereal.", {tags: ['register-login', 'alters-db', 'smoke']}, () => {
+    let logInUrl = Cypress.config("automatedTesting").logInUrl
+
     // Clean up user in case it exists.
     cy.deleteUserWithUserName(userEtherealAccount.userName)
 
-    cy.visit('user/register').then(() => {
+    cy.visit(logInUrl).then(() => {
       cy.get('#edit-mail').type(userEtherealAccount.userEmail)
       cy.get('#edit-name').type(userEtherealAccount.userName)
       cy.get('#user-register-form > #edit-actions > #edit-submit').click()
@@ -57,7 +64,7 @@ describe('User registration and login tasks.', () => {
   //
   // Log in with the login form into the authenticated account.
   //
-  it("(AT-1010) Login with form.", {tags: ['register-login', 'authenticated', 'smoke']}, () => {
+  it("(ATK-1010) Login with form.", {tags: ['register-login', 'authenticated', 'smoke']}, () => {
     let logInUrl = Cypress.config("automatedTesting").logInUrl
 
     cy.logInViaForm(qaUserAccounts.authenticated)
@@ -66,14 +73,14 @@ describe('User registration and login tasks.', () => {
   //
   // Log in with a POST request into the authenticated account.
   //
-  it.skip("(AT-1012) Login with POST.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
+  it.skip("(ATK-1012) Login with POST.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
 
   })
 
   //
   // Create a user with Drush from a fixture and delete it.
   //
-  it.skip("(AT-1020) Create and delete user.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
+  it.skip("(ATK-1020) Create and delete user.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
     cy.deleteUserWithUserName(userEtherealAccount.userName)
     cy.createUserWithUserObject(userEtherealAccount)
     cy.deleteUserWithUserName(userEtherealAccount.userName)
