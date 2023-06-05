@@ -62,7 +62,6 @@ fi
 # Copy or link framework tests.
 #
 echo "Test destination directory is <project_root>/$TEST_DESTINATION_DIR."
-echo "Test source directory is $TEST_SOURCE_DIR."
 if (( $DO_LINK == 0 )); then
   cp -R $TEST_SOURCE_DIR/* $TEST_DESTINATION_DIR
 else
@@ -71,16 +70,21 @@ else
   TESTS=$(find "${TEST_SOURCE_DIR}" -mindepth 1 -type d)
 
   for TEST_DIR in ${TESTS}; do
-    echo $TEST_DIR
+    echo "Test:"$TEST_DIR
     TEST_DIRS+=("$TEST_DIR")
   done
   
   for TEST_DIR in "${TEST_DIRS[@]}"; do
-    echo "Linking $PWD/$TEST."
-    TEST_BASENAME=$(basename "$TEST")
+    echo "Linking $PWD/$TEST_DIR."
+    TEST_BASENAME=$(basename "$TEST_DIR")
+    SOURCE=$TEST_DIR
+    echo "Before link source:"$SOURCE
+    echo "Before link dest:"$PWD/$TEST_DESTINATION_DIR
     ln -s "$PWD/$TEST_DIR" "$PWD/$TEST_DESTINATION_DIR/$TEST_BASENAME"
   done
 fi
+
+exit
 
 #
 # Copy or link data files.
