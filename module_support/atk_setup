@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Set up tests for specified testing framework.
+# Can copy or link the tests to their destination.
+
+# atk_setup <tool> <do_link>
+# tool    = playwright OR cypress
+# do_link = "link" or blank
+
+# ATTENTION:
+# Before using this tool, set the project root directory below.
+PROJECT_ROOT_DIR="web"
+
+if [ -z "$1" ]; then
+  echo "Please provide target framework (playwright OR cypress)."
+  exit 1
+fi
+
+DO_LINK=0
+if [ ! -z "$2" ]; then
+  if [ "$2" != 'link' ]; then
+    echo "Second parameter allowed to be only 'link'."
+    exit 1
+  fi
+  DO_LINK=1
+fi
+ 
+# Check if in project root by testing for presence of package.json.
+TEST_FILE="package.json"
+if [[ ! -f "$TEST_FILE" ]]; then
+  echo "Run this from the project root."
+  exit 1
+fi
+
+# Assume this is being run from the project directory and the
+# module is in the standard contrib locations.
+if [ "$1" == "cypress" ]; then
+  echo "== Setting up for Cypress. =="
+
+  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/cypress/e2e"
+  TEST_DESTINATION_DIR="cypress/e2e"
+
+  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/data"
+  DATA_DESTINATION_DIR="cypress"
+
+  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/cypress/support"
+  SUPPORT_DESTINATION_DIR="cypress"
+else
+  echo "== Setting up for Playwright. =="
+
+  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/playwright/e2e"
+  TEST_DESTINATION_DIR="e2e"
+
+  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/data"
+  DATA_DESTINATION_DIR="${TEST_DESTINATION_DIR}"
+
+  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/playwright/support"
+  SUPPORT_DESTINATION_DIR="${TEST_DESTINATION_DIR}"
+fi
+
+#
+# Copy or link framework tests.
+#
+echo "Test destination directory is <project_root>/$TEST_DESTINATION_DIR."
+echo "Test source directory is $TEST_SOURCE_DIR."
+if (( $DO_LINK == 0 )); then
+  cp -R $TEST_SOURCE_DIR/* $TEST_DESTINATION_DIR
+else
+  # Can't link the parent source directory so need to iterate through
+  # just test directories to link individual tests.
+  TESTS=$(find "${TEST_SOURCE_DIR}" -mindepth 1 -type d)
+
+  for TEST_DIR in ${TESTS}; do
+    echo $TEST_DIR
+    TEST_DIRS+=("$TEST_DIR")
+  done
+  
+  for TEST_DIR in "${TEST_DIRS[@]}"; do
+    echo "Linking $PWD/$TEST."
+    TEST_BASENAME=$(basename "$TEST")
+    ln -s "$PWD/$TEST_DIR" "$PWD/$TEST_DESTINATION_DIR/$TEST_BASENAME"
+  done
+fi
+
+#
+# Copy or link data files.
+#
+echo "Data file destination directory is <project_root>/$DATA_DESTINATION_DIR."
+if (( $DO_LINK == 0 )); then
+  cp -R $DATA_SOURCE_DIR $DATA_DESTINATION_DIR
+else
+  ln -s "$PWD/$DATA_SOURCE_DIR" "$PWD/$DATA_DESTINATION_DIR"
+fi
+
+#
+# Copy or link testing framework support files.
+#
+if (( $DO_LINK == 0 )); then
+  cp -R $SUPPORT_SOURCE_DIR $SUPPORT_DESTINATION_DIR
+else
+  ln -s "$PWD/$SUPPORT_SOURCE_DIR" "$PWD/$SUPPORT_DESTINATION_DIR"
+fi

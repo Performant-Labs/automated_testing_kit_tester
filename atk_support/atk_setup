@@ -35,51 +35,51 @@ fi
 # Assume this is being run from the project directory and the
 # module is in the standard contrib locations.
 if [ "$1" == "cypress" ]; then
-  echo "Setting up for Cypress."
+  echo "== Setting up for Cypress. =="
 
-  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing/cypress/e2e"
+  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/cypress/e2e"
   TEST_DESTINATION_DIR="cypress/e2e"
 
-  FIXTURE_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing/fixtures"
-  FIXTURE_DESTINATION_DIR="cypress/fixtures"
+  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/data"
+  DATA_DESTINATION_DIR="cypress/fixtures"
 
-  SUPPORT_FILE_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing/cypress/support"
+  SUPPORT_FILE_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/cypress/support"
   SUPPORT_FILE_DESTINATION_DIR="cypress/support"
 else
-  echo "Setting up for Playwright."
+  echo "== Setting up for Playwright. =="
 
-  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing/playwright/e2e"
+  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/playwright/e2e"
   TEST_DESTINATION_DIR="e2e"
 
-  FIXTURE_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing/fixtures"
-  FIXTURE_DESTINATION_DIR="playwright/fixtures"
+  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/data"
+  DATA_DESTINATION_DIR="${TEST_DESTINATION_DIR}/data"
 
-  SUPPORT_FILE_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing/playwright/support"
-  SUPPORT_FILE_DESTINATION_DIR="playright/support"
+  SUPPORT_FILE_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/playwright/support"
+  SUPPORT_FILE_DESTINATION_DIR="${TEST_DESTINATION_DIR}/support"
 fi
 
-#
-# Copy ATK support files to the project root.
-#
+# #
+# # Copy ATK support files to framework destination.
+# #
 
-# Loop over the output of the find command looking
-# for just ATK support files.
-ATK_SUPPORT_FILE_SOURCE_DIR = atk_support
-for SUPPORT_FILE in $(find "$ATK_SUPPORT_FILE_SOURCE_DIR" -type f); do
-  SUPPORT_FILES+=("$SUPPORT_FILE")
-done
+# # Loop over the output of the find command looking
+# # for just ATK support files.
+# MODULE_SUPPORT_FILE_SOURCE_DIR=module_support
+# for SUPPORT_FILE in $(find "$MODULE_SUPPORT_FILE_SOURCE_DIR" -type f); do
+#   SUPPORT_FILES+=("$SUPPORT_FILE")
+# done
 
-echo "Support file destination directory is <project_root>."
-for SUPPORT_FILE in "${SUPPORT_FILES[@]}"; do
-  if (( $DO_LINK == 0 )); then
-    echo "Copying $PWD/$SUPPORT_FILE."
-    cp -R $FIXTURE $SUPPORT_FILE_DESTINATION_DIR
-  else
-    echo "Linking $PWD/$SUPPORT_FILE."
-    SUPPORT_FILE_BASENAME=$(basename "$SUPPORT_FILE")
-    ln -s "$PWD/$SUPPORT_FILE" "$PWD"
-  fi
-done
+# echo "Support file destination directory is <project_root>."
+# for SUPPORT_FILE in "${SUPPORT_FILES[@]}"; do
+#   if (( $DO_LINK == 0 )); then
+#     echo "Copying $PWD/$SUPPORT_FILE."
+#     cp -R $FIXTURE $SUPPORT_FILE_DESTINATION_DIR
+#   else
+#     echo "Linking $PWD/$SUPPORT_FILE."
+#     SUPPORT_FILE_BASENAME=$(basename "$SUPPORT_FILE")
+#     ln -s "$PWD/$SUPPORT_FILE" "$PWD"
+#   fi
+# done
 
 #
 # Copy or link framework tests.
@@ -98,33 +98,35 @@ echo "Test destination directory is <project_root>/$TEST_DESTINATION_DIR."
 for TEST in "${TESTS[@]}"; do
   if (( $DO_LINK == 0 )); then
     echo "Copying $PWD/$TEST."
-    # cp -R $TEST $TEST_DESTINATION_DIR
+    cp -R $TEST $TEST_DESTINATION_DIR
   else
     echo "Linking $PWD/$TEST."
     TEST_BASENAME=$(basename "$TEST")
-    # ln -s "$PWD/$TEST" "$PWD/$TEST_DESTINATION_DIR/$TEST_BASENAME"
+    ln -s "$PWD/$TEST" "$PWD/$TEST_DESTINATION_DIR/$TEST_BASENAME"
   fi
 done
 
+exit
+
 #
-# Copy or link fixtures.
+# Copy or link data files.
 #
 
 # Loop over the output of the find command looking
-# for just fixtures.
-for FIXTURE in $(find "$FIXTURE_SOURCE_DIR" -type f); do
-  FIXTURES+=("$FIXTURE")
+# for just data files.
+for DATA_FILE in $(find "$DATA_SOURCE_DIR" -type f); do
+  DATA_FILES+=("$DATA_FILE")
 done
 
-echo "Fixture destination directory is <project_root>/$FIXTURE_DESTINATION_DIR."
-for FIXTURE in "${FIXTURES[@]}"; do
+echo "Data file destination directory is <project_root>/$DATA_DESTINATION_DIR."
+for DATA_FILE in "${DATA_FILES[@]}"; do
   if (( $DO_LINK == 0 )); then
-    echo "Copying $PWD/$FIXTURE."
-    # cp -R $FIXTURE $FIXTURE_DESTINATION_DIR
+    echo "Copying $PWD/$DATA_FILE."
+    # cp -R $DATA_FILE $DATA_DESTINATION_DIR
   else
-    echo "Linking $PWD/$FIXTURE."
-    TEST_BASENAME=$(basename "$FIXTURE")
-    # ln -s "$PWD/$FIXTURE" "$PWD/$FIXTURE_DESTINATION_DIR/$FIXTURE_BASENAME"
+    echo "Linking $PWD/$DATA_FILE."
+    TEST_BASENAME=$(basename "$DATA_FILE")
+    # ln -s "$PWD/$DATA_FILE" "$PWD/$DATA_DESTINATION_DIR/$DATA_FILE_BASENAME"
   fi
 done
 
