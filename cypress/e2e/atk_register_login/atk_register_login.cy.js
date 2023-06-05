@@ -64,23 +64,21 @@ describe('(ATK-1000) User registration and login tasks.', () => {
   //
   // Log in with the login form into the authenticated account.
   //
-  it("(ATK-1010) Login with form.", {tags: ['register-login', 'authenticated', 'smoke']}, () => {
-    let logInUrl = Cypress.config("automatedTesting").logInUrl
-
+  it("(ATK-1010) Login with form.", {tags: ['register-login', 'smoke']}, () => {
     cy.logInViaForm(qaUserAccounts.authenticated)
   })
 
   //
   // Log in with a POST request into the authenticated account.
   //
-  it.skip("(ATK-1012) Login with POST.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
+  it.skip("(ATK-1012) Login with POST.", {tags: ['register-login', 'smoke']}, () => {
 
   })
 
   //
   // Create a user with Drush from a fixture and delete it.
   //
-  it.skip("(ATK-1020) Create and delete user.", {tags: ['register-login', 'anonymous', 'smoke']}, () => {
+  it.skip("(ATK-1020) Create and delete user.", {tags: ['register-login', 'smoke']}, () => {
     cy.deleteUserWithUserName(userEtherealAccount.userName)
     cy.createUserWithUserObject(userEtherealAccount)
     cy.deleteUserWithUserName(userEtherealAccount.userName)
