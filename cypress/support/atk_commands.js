@@ -35,8 +35,6 @@ Cypress.config('defaultCommandTimeout', 5000)
 
 require('cy-verify-downloads').addCustomCommand();
 
-let remoteExecCmd = ''
-
 /**
  * Create a User using user object.
  *
@@ -62,7 +60,7 @@ Cypress.Commands.add('createUserWithUserObject', (user = {}) => {
 /**
  * Convenience method to delete user given a username.
  *
- * @param username String
+ * @param userName String
  */
 Cypress.Commands.add('deleteUserWithUserName', (userName) => {
   const cmd = `user:cancel -y --delete-content "${userName}"`
@@ -274,7 +272,6 @@ Cypress.Commands.add('loginViaUli', (uid) => {
     })
   })
 })
-
 
 
 /**

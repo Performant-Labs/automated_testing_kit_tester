@@ -5,8 +5,8 @@
 
 /// <reference types="Cypress" />
 
-import * as atk_utilities from '../../support/atk_utilities.js'
-import * as atk_commands from '../../support/atk_commands.js'
+import * as atkUtilities from '../../support/atk_utilities.js'
+import * as atkCommands from '../../support/atk_commands.js'
 
 const userEtherealAccount = require("../../../fixtures/etherealUser.json")
 const qaUserAccounts = require("../../../fixtures/qaUsers.json")
@@ -16,7 +16,7 @@ describe('(ATK-1000) User registration and login tasks.', () => {
   // Register the Ethereal user and confirm email reaches Ethereal.
   //
   it.skip("(ATK-1000) Register with form and confirm email with Ethereal.", {tags: ['register-login', 'alters-db', 'smoke']}, () => {
-    let logInUrl = Cypress.config("automatedTesting").logInUrl
+    let logInUrl = Cypress.config("atk").registerUrl
 
     // Clean up user in case it exists.
     cy.deleteUserWithUserName(userEtherealAccount.userName)

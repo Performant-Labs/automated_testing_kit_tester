@@ -80,11 +80,9 @@ else
     SOURCE=$TEST_DIR
     echo "Before link source:"$SOURCE
     echo "Before link dest:"$PWD/$TEST_DESTINATION_DIR
-    ln -s "$PWD/$TEST_DIR" "$PWD/$TEST_DESTINATION_DIR/$TEST_BASENAME"
+    ln -s "$PWD/$TEST_DIR" "$PWD/$TEST_DESTINATION_DIR"
   done
 fi
-
-exit
 
 #
 # Copy or link data files.
