@@ -33,8 +33,6 @@ Cypress.config('defaultCommandTimeout', 5000)
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-require('cy-verify-downloads').addCustomCommand();
-
 /**
  * Create a User using user object.
  *

@@ -10,6 +10,8 @@
 # ATTENTION:
 # Before using this tool, set the project root directory below.
 PROJECT_ROOT_DIR="web"
+MODULE_DIR="modules/contrib/automated_testing_kit"
+MODULE_SUPPORT_DIR=$PROJECT_ROOT_DIR/$MODULE_DIR/module_support
 
 if [ -z "$1" ]; then
   echo "Please provide target framework (playwright OR cypress)."
@@ -24,11 +26,11 @@ if [ ! -z "$2" ]; then
   fi
   DO_LINK=1
 fi
- 
+
 # Check if in project root by testing for presence of package.json.
 TEST_FILE="package.json"
 if [[ ! -f "$TEST_FILE" ]]; then
-  echo "Run this from the project root."
+  echo "Install Cypress or Playwright and run this from the project root."
   exit 1
 fi
 
@@ -37,31 +39,37 @@ fi
 if [ "$1" == "cypress" ]; then
   echo "== Setting up for Cypress. =="
 
-  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/cypress/e2e"
+  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/cypress/e2e"
   TEST_DESTINATION_DIR="cypress/e2e"
 
-  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/data"
+  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/data"
   DATA_DESTINATION_DIR="cypress"
 
-  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/cypress/support"
+  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/cypress/support"
   SUPPORT_DESTINATION_DIR="cypress"
 else
   echo "== Setting up for Playwright. =="
 
-  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/playwright/e2e"
-  TEST_DESTINATION_DIR="e2e"
+  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/playwright/e2e"
+  TEST_DESTINATION_DIR="tests"
 
-  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/data"
+  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/data"
   DATA_DESTINATION_DIR="${TEST_DESTINATION_DIR}"
 
-  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/modules/contrib/automated_testing_kit/playwright/support"
+  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/playwright/support"
   SUPPORT_DESTINATION_DIR="${TEST_DESTINATION_DIR}"
 fi
 
 #
+# Copy atk.config.js to the project root.
+#
+echo "Copying atk.config.js to <project_root>."
+cp $MODULE_SUPPORT_DIR/atk.config.js .
+
+#
 # Copy or link framework tests.
 #
-echo "Test destination directory is <project_root>/$TEST_DESTINATION_DIR."
+echo "Copying or linking tests to <project_root>/$TEST_DESTINATION_DIR."
 if (( $DO_LINK == 0 )); then
   cp -R $TEST_SOURCE_DIR/* $TEST_DESTINATION_DIR
 else
@@ -73,7 +81,7 @@ else
     echo "Test:"$TEST_DIR
     TEST_DIRS+=("$TEST_DIR")
   done
-  
+
   for TEST_DIR in "${TEST_DIRS[@]}"; do
     echo "Linking $PWD/$TEST_DIR."
     TEST_BASENAME=$(basename "$TEST_DIR")
@@ -87,7 +95,7 @@ fi
 #
 # Copy or link data files.
 #
-echo "Data file destination directory is <project_root>/$DATA_DESTINATION_DIR."
+echo "Copying or linking data files to <project_root>/$DATA_DESTINATION_DIR."
 if (( $DO_LINK == 0 )); then
   cp -R $DATA_SOURCE_DIR $DATA_DESTINATION_DIR
 else
@@ -97,6 +105,7 @@ fi
 #
 # Copy or link testing framework support files.
 #
+echo "Copying or linking test framework support files to <project_root>/$SUPPORT_DESTINATION_DIR."
 if (( $DO_LINK == 0 )); then
   cp -R $SUPPORT_SOURCE_DIR $SUPPORT_DESTINATION_DIR
 else

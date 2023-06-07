@@ -20,17 +20,17 @@ test.describe('(ATK-1000) User registration and login tasks.', () => {
   test("(ATK-1000) Register with form and confirm email with Ethereal. @register-login @smoke", async ({ page }) => {
     let textContent = null
 
-    // atkCommands.deleteUserWithUserName(userEtherealAccount.userName)
+    atkCommands.deleteUserWithUserName(userEtherealAccount.userName)
   
-    // await page.goto(atkConfig.registerUrl)
+    await page.goto(atkConfig.registerUrl)
 
-    // await page.getByLabel('Email address').fill(userEtherealAccount.userEmail)
-    // await page.getByLabel('Username').fill(userEtherealAccount.userName)
-    // await page.getByRole('button', { name: 'Create new account' }).click()
+    await page.getByLabel('Email address').fill(userEtherealAccount.userEmail)
+    await page.getByLabel('Username').fill(userEtherealAccount.userName)
+    await page.getByRole('button', { name: 'Create new account' }).click()
 
-    // // Should see the thank-you message.
-    // const textContent = await page.textContent('body');
-    // expect(textContent).toContain('Thank you for applying for an account.');
+    // Should see the thank-you message.
+    textContent = await page.textContent('body');
+    expect(textContent).toContain('Thank you for applying for an account.');
 
     // Check for registration email at Ethereal.
     const etherealUrl = 'https://ethereal.email'
@@ -46,6 +46,8 @@ test.describe('(ATK-1000) User registration and login tasks.', () => {
 
     textContent = await page.textContent('body');
     expect(textContent).toContain('Messages for ' + userEtherealAccount.userEmail);
+
+    await page.getByRole('link', { name: 'Test email from' })
   })
 
   //
