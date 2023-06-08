@@ -9,9 +9,9 @@
 
 # ATTENTION:
 # Before using this tool, set the project root directory below.
-PROJECT_ROOT_DIR="web"
+WEB_ROOT_DIR="web"
 MODULE_DIR="modules/contrib/automated_testing_kit"
-MODULE_SUPPORT_DIR=$PROJECT_ROOT_DIR/$MODULE_DIR/module_support
+MODULE_SUPPORT_DIR=$WEB_ROOT_DIR/$MODULE_DIR/module_support
 
 if [ -z "$1" ]; then
   echo "Please provide target framework (playwright OR cypress)."
@@ -39,24 +39,24 @@ fi
 if [ "$1" == "cypress" ]; then
   echo "== Setting up for Cypress. =="
 
-  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/cypress/e2e"
+  TEST_SOURCE_DIR="$WEB_ROOT_DIR/$MODULE_DIR/cypress/e2e"
   TEST_DESTINATION_DIR="cypress/e2e"
 
-  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/data"
+  DATA_SOURCE_DIR="$WEB_ROOT_DIR/$MODULE_DIR/data"
   DATA_DESTINATION_DIR="cypress"
 
-  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/cypress/support"
+  SUPPORT_SOURCE_DIR="$WEB_ROOT_DIR/$MODULE_DIR/cypress/support"
   SUPPORT_DESTINATION_DIR="cypress"
 else
   echo "== Setting up for Playwright. =="
 
-  TEST_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/playwright/e2e"
+  TEST_SOURCE_DIR="$WEB_ROOT_DIR/$MODULE_DIR/playwright/e2e"
   TEST_DESTINATION_DIR="tests"
 
-  DATA_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/data"
+  DATA_SOURCE_DIR="$WEB_ROOT_DIR/$MODULE_DIR/data"
   DATA_DESTINATION_DIR="${TEST_DESTINATION_DIR}"
 
-  SUPPORT_SOURCE_DIR="$PROJECT_ROOT_DIR/$MODULE_DIR/playwright/support"
+  SUPPORT_SOURCE_DIR="$WEB_ROOT_DIR/$MODULE_DIR/playwright/support"
   SUPPORT_DESTINATION_DIR="${TEST_DESTINATION_DIR}"
 fi
 
