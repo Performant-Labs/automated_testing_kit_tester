@@ -239,8 +239,8 @@ Cypress.Commands.add("logInViaPost", (account) => {
       url: '/user/login',
       form: true,
       body: {
-        name: qaUserAccounts.authenticated.userName,
-        pass: qaUserAccounts.authenticated.userPassword,
+        name: account.userName,
+        pass: account.userPassword,
         form_id: 'user_login_form'
       }
     }).then((response) => {

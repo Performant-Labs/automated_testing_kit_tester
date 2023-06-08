@@ -72,6 +72,7 @@ describe('(ATK-1000) User registration and login tasks.', () => {
   // Log in with a POST request into the authenticated account.
   //
   it.skip("(ATK-1012) Login with POST.", {tags: ['register-login', 'smoke']}, () => {
+    cy.logInViaPost(qaUserAccounts.authenticated)
 
   })
 
