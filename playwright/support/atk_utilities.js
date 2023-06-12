@@ -1,8 +1,12 @@
-/// <reference types="Cypress" />
+export {
+  createRandomString,
+};
 
 /**
  * Return a string of random characters of specified length.
- * @param {length}        int   Length of string to return.
+ * 
+ * @param length        int   Length of string to return.
+ * @returns
  */
 function createRandomString(length) {
   var result           = '';
@@ -14,6 +18,3 @@ function createRandomString(length) {
   }
   return result;
 }
-
-export {createRandomString};
-
