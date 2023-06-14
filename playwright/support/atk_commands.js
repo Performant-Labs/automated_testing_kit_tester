@@ -13,6 +13,7 @@ module.exports = {
   execDrush,
   execPantheonDrush,
   getDrushAlias,
+  getUidWithEmail,
   getUsernameWithEmail,
   logInViaForm,
   logInViaUli,
@@ -33,22 +34,24 @@ const playwrightConfig = require('../../playwright.config.js')
  * Create a user via Drush using a JSON user object.
  * See qaUsers.json for the definition.
  * 
+ * TODO: cy.exec is failing to capture the result of user:create, 
+ * which should provide the UID. 
+ * See issue: https://github.com/drush-ops/drush/issues/5660
+ * 
  * @param {object} user JSON user object; see qaUsers.json for the structure.
  * @param {array} roles Array of string roles to pass to Drush (machine names).
  * @param {array} args Array of string arguments to pass to Drush.
  * @param {array} options Array of string options to pass to Drush.
- * @param {integer} The Drupal user id.
  */
 function createUserWithUserObject(user, roles = [], args = [], options = []) {
-  // Create the user.
   let cmd = `user:create `;
 
-  if (!(args == undefined) && !Array.isArray(args)) {
+  if ((args === undefined) || !Array.isArray(args)) {
     console.log("createUserWithUserObject: Pass an array for args.")
     exit;
   }
 
-  if (!(options == undefined) && !Array.isArray(options)) {
+  if ((options === undefined) || !Array.isArray(options)) {
     console.log("createUserWithUserObject: Pass an array for options.")
     exit;
   }
@@ -58,32 +61,29 @@ function createUserWithUserObject(user, roles = [], args = [], options = []) {
   console.log(`Attempting to create: ${user.userName}. `)
 
   let result = execDrush(cmd, args, options)
-  
-  // Get the UID, if present.
-  const pattern = "/Create a new user with uid ([0-9]+)/g"
-  
+
   // TODO: Bring this in when execDrush reliably
   // returns results.
+
+  // Get the UID, if present.
+  // const pattern = "/Created a new user with uid ([0-9]+)/g"
+  
   // let uid = result.match(pattern)
   let uid = 0
 
-  // If successful, add the roles.
-  if (Number.isInteger(uid) && uid != 0) {
-    // Role(s) may come from the user object or the function arguments.
-    if (user.hasOwnProperty('userRoles')) {
-      user.userRoles.forEach(function (role) {
-        roles.push(role)
-      })
-    }
-
-    roles.forEach(function (role) {
-      cmd = `user:role:add "${role}" "${user.userName}"`
-      execDrush(cmd)
-      console.log(`${role}: Role assigned to the user ${user.userName}`)
+  // Attempt to add the roles.
+  // Role(s) may come from the user object or the function arguments.
+  if (user.hasOwnProperty('userRoles')) {
+    user.userRoles.forEach(function (role) {
+      roles.push(role)
     })
   }
-  // TODO: Returns zero currently.
-  return uid
+
+  roles.forEach(function (role) {
+    cmd = `user:role:add "${role}" "${user.userName}"`
+    execDrush(cmd)
+    console.log(`${role}: Role assigned to the user ${user.userName}`)
+  })
 }
 
 /**
@@ -93,41 +93,36 @@ function createUserWithUserObject(user, roles = [], args = [], options = []) {
  * @param {[string]} options Array of string options.
  */
 function deleteUserWithEmail(email, options = []) {
-  if (!(options == undefined) && !Array.isArray(options)) {
+  if ((options === undefined) || !Array.isArray(options)) {
     console.log("deleteUserWithEmail: Pass an array for options.")
   }
 
-  // TODO: --mail isn't working.
+  // TODO: --mail doesn't working without an argument.
   // See issue filed with Drush:
   // https://github.com/drush-ops/drush/issues/5652
   //
-  // When that's fixed, replace with:
-  // options.push(`--mail="${email}"`)
-  // const cmd = `user:cancel -y ` 
-
+  // When that's corrected, remove "dummy."
   // Workaround is to find the username given the email.
-  let username = getUsernameWithEmail(email)
-  if (typeof username === "string") {
-    const cmd = `user:cancel -y `
+  options.push(`--mail="${email}"`)
+  const cmd = `user:cancel -y `
 
-    execDrush(cmd, [`"${username}"`], options)
-  }
+  execDrush(cmd, [`"${username}"`], options)
 }
 
 /**
  * Delete user via Drush given a Drupal UID.
- * Using a workaround. See issue filed with Drush:
- * https://github.com/drush-ops/drush/issues/5652
  * 
  * @param {integer} uid Drupal uid of user to delete.
  */
 function deleteUserWithUid(uid, options = []) {
-  if (!(options == undefined) && !Array.isArray(options)) {
+  if ((options === undefined) || !Array.isArray(options)) {
     console.log("deleteUserWithUid: Pass an array for options.")
   }
 
   options.push(`--uid="${uid}"`)
-  const cmd = `user:cancel -y ` 
+  options.push('--delete-content')
+  // As of Drush 11.6 --uid doesn't work without a name argument.
+  const cmd = `user:cancel -y dummy ` 
 
   execDrush(cmd, [], options)
 }
@@ -142,12 +137,12 @@ function deleteUserWithUid(uid, options = []) {
 function deleteUserWithUserName(userName, args = [], options = []) {
   const cmd = `user:cancel -y  "${userName}"`
 
-  if (!(args == undefined) && !Array.isArray(args)) {
+  if ((args === undefined) || !Array.isArray(args)) {
     console.log("deleteUserWithUserName: Pass an array for args.")
     exit;
   }
 
-  if (!(options == undefined) && !Array.isArray(options)) {
+  if ((options === undefined) || !Array.isArray(options)) {
     console.log("deleteUserWithUserName: Pass an array for options.")
     exit;
   }
@@ -170,12 +165,12 @@ function deleteUserWithUserName(userName, args = [], options = []) {
 function execDrush(cmd, args = [], options = []) {
   let output = ''
 
-  if (!(args == undefined) && !Array.isArray(args)) {
+  if ((args === undefined) || !Array.isArray(args)) {
     console.log("execDrush: Pass an array for arguments.")
     exit;
   }
 
-  if (!(options == undefined) && !Array.isArray(options)) {
+  if ((options === undefined) || !Array.isArray(options)) {
     console.log("execDrush: Pass an array for options.")
     exit;
   }
@@ -193,9 +188,6 @@ function execDrush(cmd, args = [], options = []) {
   else {
     try {
       output = execSync(command, { encoding: 'utf8' })
-
-      // TODO: Fix this. Output is coming back with a buffer but the 
-      // line below returns and empty string.
       console.log("execSync: " + output)
     } catch (error) {
       // Soak up error.
@@ -254,6 +246,30 @@ function getDrushAlias() {
 }
 
 /**
+ * Return the UID of a user given an email.
+ * 
+ * @param {string} email Email of the account.
+ * @returns {integer} UID of user.
+ */
+function getUidWithEmail(email) {
+  const cmd = `user:info --mail=${email} --format=json`
+
+  result = execDrush(cmd)
+  if (!result == '') {
+
+    // Fetch uid from json object, if present.
+    const userJson = JSON.parse(result)
+
+    for (let key in userJson) {
+      if (userJson[key].hasOwnProperty('uid')) {
+        const uidValue = userJson[key].uid;
+        return parseInt(uidValue) // Exit the loop once the mail property is found.
+      }
+    }
+  }
+}
+
+/**
  * Return the Username of a user given an email.
  * 
  * @param {string} email Email of the account.
@@ -263,7 +279,7 @@ function getUsernameWithEmail(email) {
   const cmd = `user:info --mail=${email} --format=json`
   const result = execDrush(cmd)
 
-  // Fetch uid from json object, if present
+  // Fetch uid from json object, if present.
   let nameValue = null
   if (!result == '') {
     // Expecting a string in json form.
