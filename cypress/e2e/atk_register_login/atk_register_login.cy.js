@@ -88,7 +88,6 @@ describe('User registration and login tasks.', () => {
   //
   it.skip("(ATK-CY-1011) Log in with POST.", {tags: ['register-login', 'smoke']}, () => {
     // TODO: Not ready yet.
-    // cy.logOutViaUi()
     // cy.logInViaPost(qaUserAccounts.authenticated)
   })
 

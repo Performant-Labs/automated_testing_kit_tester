@@ -43,7 +43,7 @@ const playwrightConfig = require('../../playwright.config.js')
  * @param {array} args Array of string arguments to pass to Drush.
  * @param {array} options Array of string options to pass to Drush.
  */
-function createUserWithUserObject(user, roles = [], args = [], options = []) {
+async function createUserWithUserObject(user, roles = [], args = [], options = []) {
   let cmd = `user:create `;
 
   if ((args === undefined) || !Array.isArray(args)) {
@@ -92,7 +92,7 @@ function createUserWithUserObject(user, roles = [], args = [], options = []) {
  * @param {string} email Email of account to delete.
  * @param {[string]} options Array of string options.
  */
-function deleteUserWithEmail(email, options = []) {
+async function deleteUserWithEmail(email, options = []) {
   if ((options === undefined) || !Array.isArray(options)) {
     console.log("deleteUserWithEmail: Pass an array for options.")
   }
@@ -114,7 +114,7 @@ function deleteUserWithEmail(email, options = []) {
  * 
  * @param {integer} uid Drupal uid of user to delete.
  */
-function deleteUserWithUid(uid, options = []) {
+async function deleteUserWithUid(uid, options = []) {
   if ((options === undefined) || !Array.isArray(options)) {
     console.log("deleteUserWithUid: Pass an array for options.")
   }
@@ -134,7 +134,7 @@ function deleteUserWithUid(uid, options = []) {
  * @param {array} args Array of string arguments to pass to Drush.
  * @param {array} options Array of string options to pass to Drush.
  */
-function deleteUserWithUserName(userName, args = [], options = []) {
+async function deleteUserWithUserName(userName, args = [], options = []) {
   const cmd = `user:cancel -y  "${userName}"`
 
   if ((args === undefined) || !Array.isArray(args)) {
@@ -162,7 +162,7 @@ function deleteUserWithUserName(userName, args = [], options = []) {
  * @param {array} options Array of string options to pass to Drush.
  * @returns {string} The output from executing the command in a shell.
  */
-function execDrush(cmd, args = [], options = []) {
+async function execDrush(cmd, args = [], options = []) {
   let output = ''
 
   if ((args === undefined) || !Array.isArray(args)) {
@@ -205,7 +205,7 @@ function execDrush(cmd, args = [], options = []) {
  * @param {string} cmd Drush command; execDrush() contructs this with args and options.
  * @returns {string} The output from executing the command in a shell.
  */
-function execPantheonDrush(cmd) {
+async function execPantheonDrush(cmd) {
   let result
   const connectCmd = `terminus connection:info ${atkConfig.pantheon.site}.${atkConfig.pantheon.environment} --format=json`
 
@@ -231,7 +231,7 @@ function execPantheonDrush(cmd) {
  * 
  * @returns {string} The Drush command i.e "lando drush ", etc.
  */
-function getDrushAlias() {
+async function getDrushAlias() {
   let cmd;
 
   // Drush to Pantheon requires Terminus.
@@ -251,7 +251,7 @@ function getDrushAlias() {
  * @param {string} email Email of the account.
  * @returns {integer} UID of user.
  */
-function getUidWithEmail(email) {
+async function getUidWithEmail(email) {
   const cmd = `user:info --mail=${email} --format=json`
 
   result = execDrush(cmd)
@@ -275,7 +275,7 @@ function getUidWithEmail(email) {
  * @param {string} email Email of the account.
  * @returns {string} Username of user.
  */
-function getUsernameWithEmail(email) {
+async function getUsernameWithEmail(email) {
   const cmd = `user:info --mail=${email} --format=json`
   const result = execDrush(cmd)
 
@@ -346,7 +346,7 @@ async function logOutViaUi(page) {
  * @param {string} key Name of configuration setting.
  * @param {*} value Value of configuration setting.
  */
-function setDrupalConfiguration(objectName, key, value) {
+async function setDrupalConfiguration(objectName, key, value) {
   const cmd = `cset -y ${objectName} ${key} ${value}`
 
   execDrush(cmd)
