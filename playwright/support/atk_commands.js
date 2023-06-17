@@ -1,9 +1,13 @@
 /**
  * atk_commands.js
  *
- * Useful functions.
+ * Useful functions for Playwright.
  *
  */
+
+/** ESLint directives */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable import/first */
 
 module.exports = {
   createUserWithUserObject,
@@ -21,7 +25,7 @@ module.exports = {
   setDrupalConfiguration
 }
 
-import { test, expect } from '@playwright/test'
+import { expect } from '@playwright/test'
 import { execSync } from 'child_process'
 
 // Fetch the Automated Testing Kit config, which is in the project root.
@@ -60,7 +64,7 @@ function createUserWithUserObject (user, roles = [], args = [], options = []) {
   options.push(`--mail='${user.userEmail}'`, `--password='${user.userPassword}'`)
   console.log(`Attempting to create: ${user.userName}. `)
 
-  const result = execDrush(cmd, args, options)
+  execDrush(cmd, args, options)
 
   // TODO: Bring this in when execDrush reliably
   // returns results.
@@ -181,8 +185,7 @@ function execDrush (cmd, args = [], options = []) {
   if (atkConfig.pantheon.isTarget) {
     // sshCmd comes from the test and is set in the before()
     return execPantheonDrush(command) // Returns stdout (not wrapped).
-  }
-  else {
+  } else {
     try {
       output = execSync(command, { encoding: 'utf8' })
       console.log('execSync: ' + output)
@@ -233,9 +236,8 @@ function getDrushAlias () {
 
   // Drush to Pantheon requires Terminus.
   if (atkConfig.pantheon.isTarget) {
-    cmd = 'terminus remote:drush ' + Cypress.config('pantheon.site') + '.' + Cypress.config('pantheon.environment') + ' -'
-  }
-  else {
+    cmd = 'terminus remote:drush ' + atkConfig.pantheon.site + '.' + atkConfig.pantheon.environment + ' -'
+  } else {
     // Fetch the Drush command appropriate to the operating mode.
     cmd = atkConfig.drushCmd + ' '
   }

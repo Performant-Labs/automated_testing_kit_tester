@@ -44,6 +44,7 @@ describe('User registration and login tasks.', () => {
     cy.contains('Thank you for applying for an account.')
 
     // Give the email some time to arrive.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000)
 
     // Check for registration email at Ethereal.

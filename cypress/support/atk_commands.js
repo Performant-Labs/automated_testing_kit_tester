@@ -1,16 +1,22 @@
 /**
  * atk_commands.js
  *
- * Useful functions.
+ * Useful functions for Cypress.
  */
 
 /// <reference types='Cypress' />
+
+/** ESLint directives */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable import/first */
+
+import { execSync } from 'child_process'
 
 // https://github.com/bahmutov/cypress-log-to-term
 import 'cypress-log-to-term/commands'
 
 // Fetch the Automated Testing Kit config, which is in the project root.
-const atkConfig = require('../../atk.config.js')
+import atkConfig from '../../atk.config.js'
 
 /**
  * Create a user via Drush using a JSON user object.
@@ -165,8 +171,7 @@ Cypress.Commands.add('execDrush', (cmd, args = [], options = []) => {
   if (atkConfig.pantheon.isTarget) {
     // sshCmd comes from the test and is set in the before()
     return cy.execPantheonDrush(command) // Returns stdout (not wrapped).
-  }
-  else {
+  } else {
     cy.exec(command, { failOnNonZeroExit: false }).then((result) => {
       output = result.stdout
       console.log('execSync: ' + output)
@@ -214,8 +219,7 @@ function getDrushAlias () {
   // Drush to Pantheon requires Terminus.
   if (atkConfig.pantheon.isTarget) {
     cmd = 'terminus remote:drush ' + atkConfig.pantheon.site + '.' + atkConfig.pantheon.environment + ' -- '
-  }
-  else {
+  } else {
     // Fetch the Drush command appropriate to the operating mode.
     cmd = atkConfig.drushCmd + ' '
   }
@@ -299,6 +303,7 @@ Cypress.Commands.add('logInViaForm', (account) => {
     cy.visit(logInUrl)
 
     // It is ok for the username to be visible in the Command Log.
+    // eslint-disable-next-line no-unused-expressions
     expect(account.userName, 'username was set').to.be.a('string').and.not.be.empty
 
     // But the password value should not be shown.

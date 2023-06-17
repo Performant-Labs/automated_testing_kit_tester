@@ -4,6 +4,9 @@
  * Registration, login and forgotten password tests.
  */
 
+/** ESLint directives */
+/* eslint-disable import/first */
+
 import * as atkCommands from '../support/atk_commands.js'
 import * as atkUtilities from '../support/atk_utilities.js'
 
