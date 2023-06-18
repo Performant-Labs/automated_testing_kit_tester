@@ -63,8 +63,13 @@ fi
 #
 # Copy atk.config.js to the project root.
 #
-echo "Copying atk.config.js to <project_root>."
-cp $MODULE_SUPPORT_DIR/atk.config.js .
+if [ "$1" == "cypress" ]; then
+  echo "Copying cypress.atk.config.js to <project_root>/atk.config.js."
+  cp $MODULE_SUPPORT_DIR/cypress.atk.config.js .
+else
+  echo "Copying playwright.atk.config.js to <project_root>/atk.config.js."
+  cp $MODULE_SUPPORT_DIR/cypress.atk.config.js .
+fi
 
 #
 # Copy or link framework tests.

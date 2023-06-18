@@ -6,7 +6,8 @@ module.exports = {
     },
     "extends": [
         "standard-with-typescript",
-        "plugin:cypress/recommended"
+        "plugin:cypress/recommended",
+        "airbnb-base"
     ],
     "overrides": [
         {

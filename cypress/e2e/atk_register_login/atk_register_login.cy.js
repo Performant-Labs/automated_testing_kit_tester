@@ -55,24 +55,23 @@ describe('User registration and login tasks.', () => {
       longUserName: extendedUserName
     }
 
-    cy.origin('https://ethereal.email', { args: sentArgs },
-      ({ userName, userEmail, userPassword, longUserName }) => {
-        cy.visit('/login')
-        cy.get('#address').type(userEmail)
-        cy.get('#password').type(userPassword)
-        cy.get('form > :nth-child(5) > .btn').click()
-        cy.contains('Logged in as ' + userEmail)
+    cy.origin('https://ethereal.email', { args: sentArgs }, ({ userName, userEmail, userPassword, longUserName }) => {
+      cy.visit('/login')
+      cy.get('#address').type(userEmail)
+      cy.get('#password').type(userPassword)
+      cy.get('form > :nth-child(5) > .btn').click()
+      cy.contains('Logged in as ' + userEmail)
 
-        cy.visit('/messages', true)
-        cy.contains('Messages for ' + userEmail)
+      cy.visit('/messages', true)
+      cy.contains('Messages for ' + userEmail)
 
-        // There may be two emails, one for the user and one for the admin.
-        // Look for email in the first column and the username + userCode generated above
-        // in the second column that's the user email.
-        const toValue = 'To: <' + userEmail + '>'
-        const subjectValue = 'Account details for ' + longUserName
-        cy.get('table tr').contains('td', toValue).parent().contains('td', subjectValue)
-      })
+      // There may be two emails, one for the user and one for the admin.
+      // Look for email in the first column and the username + userCode generated above
+      // in the second column that's the user email.
+      const toValue = 'To: <' + userEmail + '>'
+      const subjectValue = 'Account details for ' + longUserName
+      cy.get('table tr').contains('td', toValue).parent().contains('td', subjectValue)
+    })
   })
 
   //

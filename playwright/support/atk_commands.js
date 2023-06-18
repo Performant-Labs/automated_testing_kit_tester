@@ -25,7 +25,7 @@ module.exports = {
   setDrupalConfiguration
 }
 
-import { expect } from '@playwright/test'
+import { expect, defineConfig } from '@playwright/test'
 import { execSync } from 'child_process'
 
 // Fetch the Automated Testing Kit config, which is in the project root.
@@ -85,7 +85,7 @@ function createUserWithUserObject (user, roles = [], args = [], options = []) {
   roles.forEach(function (role) {
     cmd = `user:role:add '${role}' '${user.userName}'`
     execDrush(cmd)
-    console.log(`${role}: Role assigned to the user ${user.userName}`)
+    console.log(`${role}: If role exists, role assigned to the user ${user.userName}`)
   })
 }
 
@@ -106,7 +106,7 @@ function deleteUserWithEmail (email, options = []) {
   //
   // When that's corrected, remove 'dummy.'
   // Workaround is to find the username given the email.
-  options.push(`--mail='${email}'`)
+  options.push(`--mail=${email}`)
   const cmd = 'user:cancel -y dummy '
 
   execDrush(cmd, [], options)
@@ -122,7 +122,7 @@ function deleteUserWithUid (uid, options = []) {
     console.log('deleteUserWithUid: Pass an array for options.')
   }
 
-  options.push(`--uid='${uid}'`)
+  options.push(`--uid=${uid}`)
   options.push('--delete-content')
   // As of Drush 11.6 --uid doesn't work without a name argument.
   const cmd = 'user:cancel -y dummy '
@@ -138,7 +138,7 @@ function deleteUserWithUid (uid, options = []) {
  * @param {array} options Array of string options to pass to Drush.
  */
 function deleteUserWithUserName (userName, args = [], options = []) {
-  const cmd = `user:cancel -y  '${userName}'`
+  const cmd = `user:cancel -y  '${userName}' `
 
   if ((args === undefined) || !Array.isArray(args)) {
     console.log('deleteUserWithUserName: Pass an array for args.')
@@ -187,7 +187,7 @@ function execDrush (cmd, args = [], options = []) {
     return execPantheonDrush(command) // Returns stdout (not wrapped).
   } else {
     try {
-      output = execSync(command, { encoding: 'utf8' })
+      output = execSync(command)
       console.log('execSync: ' + output)
     } catch (error) {
       // Soak up error.
@@ -207,20 +207,16 @@ function execDrush (cmd, args = [], options = []) {
  */
 function execPantheonDrush (cmd) {
   let result
-  const connectCmd = `terminus connection:info ${atkConfig.pantheon.site}.${atkConfig.pantheon.environment} --format=json`
 
-  // Ask Terminus for SFTP command.
-  result = execSync(connectCmd, { encoding: 'utf8' })
+  // Construct the Terminus command. Remove "drush" from argument.
+  const remoteCmd = `terminus remote:drush ${atkConfig.pantheon.site}.${atkConfig.pantheon.environment} -- ${cmd.substring(5)}`
 
-  const connections = JSON.parse(result)
-  const sftpConnection = connections.sftp_command
-  const envConnection = sftpConnection.replace('sftp -o Port=2222 ', '')
-
-  // Construct the command that will talk to the Pantheon server including
-  // the cmd argument.
-  const remoteCmd = `ssh -T ${envConnection} -p 2222 -o 'StrictHostKeyChecking=no' -o 'AddressFamily inet' 'drush ${cmd}'`
-
-  result = execSync(remoteCmd, { encoding: 'utf8' })
+  result = ''
+  try {
+    result = execSync(remoteCmd)
+  } catch (error) {
+    console.log("execSyn: " + error)
+  }
 
   return result
 }
@@ -236,7 +232,7 @@ function getDrushAlias () {
 
   // Drush to Pantheon requires Terminus.
   if (atkConfig.pantheon.isTarget) {
-    cmd = 'terminus remote:drush ' + atkConfig.pantheon.site + '.' + atkConfig.pantheon.environment + ' -'
+    cmd = 'drush '
   } else {
     // Fetch the Drush command appropriate to the operating mode.
     cmd = atkConfig.drushCmd + ' '

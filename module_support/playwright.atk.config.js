@@ -7,10 +7,10 @@ module.exports = {
   registerUrl: "user/register",
   logInUrl: "user/login",
   logOutUrl: "user/logout",
-  testDir: "tests",
   authDir: "tests/support",
   dataDir: "tests/data",
   supportDir: "tests/support",
+  testDir: "tests",
   pantheon : {
     isTarget: false,
     site: "aSite",

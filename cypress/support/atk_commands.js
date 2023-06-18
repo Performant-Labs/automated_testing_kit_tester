@@ -34,12 +34,12 @@ import atkConfig from '../../atk.config.js'
 Cypress.Commands.add('createUserWithUserObject', (user, roles = [], args = [], options = []) => {
   let cmd = 'user:create '
 
-  if ((args === undefined) || !Array.isArray(args)) {
+  if (args === undefined || !Array.isArray(args)) {
     console.log('createUserWithUserObject: Pass an array for args.')
     return
   }
 
-  if ((options === undefined) || !Array.isArray(options)) {
+  if (options === undefined || !Array.isArray(options)) {
     console.log('createUserWithUserObject: Pass an array for options.')
     return
   }
@@ -68,7 +68,7 @@ Cypress.Commands.add('createUserWithUserObject', (user, roles = [], args = [], o
     roles.forEach(function (role) {
       cmd = `user:role:add '${role}' '${user.userName}'`
       cy.execDrush(cmd)
-      console.log(`${role}: Role assigned to the user ${user.userName}`)
+      console.log(`${role}: If role exists, role assigned to the user ${user.userName}`)
     })
   })
 })
@@ -80,7 +80,7 @@ Cypress.Commands.add('createUserWithUserObject', (user, roles = [], args = [], o
  * @param {[string]} options Array of string options.
  */
 Cypress.Commands.add('deleteUserWithEmail', (email, options = []) => {
-  if ((options === undefined) || !Array.isArray(options)) {
+  if (options === undefined || !Array.isArray(options)) {
     console.log('deleteUserWithEmail: Pass an array for options.')
   }
 
@@ -101,7 +101,7 @@ Cypress.Commands.add('deleteUserWithEmail', (email, options = []) => {
  * @param {integer} uid Drupal uid of user to delete.
  */
 Cypress.Commands.add('deleteUserWithUid', (uid, options = []) => {
-  if ((options === undefined) || !Array.isArray(options)) {
+  if (options === undefined || !Array.isArray(options)) {
     console.log('deleteUserWithUid: Pass an array for options.')
   }
 
@@ -124,12 +124,12 @@ Cypress.Commands.add('deleteUserWithUid', (uid, options = []) => {
 Cypress.Commands.add('deleteUserWithUserName', (userName, args = [], options = []) => {
   const cmd = `user:cancel -y  '${userName}'`
 
-  if ((args === undefined) || !Array.isArray(args)) {
+  if (args === undefined || !Array.isArray(args)) {
     console.log('deleteUserWithUserName: Pass an array for args.')
     return
   }
 
-  if ((options === undefined) || !Array.isArray(options)) {
+  if (options === undefined || !Array.isArray(options)) {
     console.log('deleteUserWithUserName: Pass an array for options.')
     return
   }
@@ -152,12 +152,12 @@ Cypress.Commands.add('deleteUserWithUserName', (userName, args = [], options = [
 Cypress.Commands.add('execDrush', (cmd, args = [], options = []) => {
   let output = ''
 
-  if ((args === undefined) || !Array.isArray(args)) {
+  if (args === undefined || !Array.isArray(args)) {
     console.log('execDrush: Pass an array for arguments.')
     return
   }
 
-  if ((options === undefined) || !Array.isArray(options)) {
+  if (options === undefined || !Array.isArray(options)) {
     console.log('execDrush: Pass an array for options.')
     return
   }
@@ -174,7 +174,7 @@ Cypress.Commands.add('execDrush', (cmd, args = [], options = []) => {
   } else {
     cy.exec(command, { failOnNonZeroExit: false }).then((result) => {
       output = result.stdout
-      console.log('execSync: ' + output)
+      console.log('cy.exec: ' + output)
       return cy.wrap(output)
     })
   }
@@ -183,28 +183,20 @@ Cypress.Commands.add('execDrush', (cmd, args = [], options = []) => {
 /**
  * Run a Pantheon Drush command via Terminus.
  * Called by execDrush().
+ * TODO: Use Terminus instead, ssh is a workaround.
  *
  * @param {string} cmd Drush command execDrush() contructs this with args and options.
  * @returns {string} The output from executing the command in a shell.
  */
 Cypress.Commands.add('execPantheonDrush', (cmd) => {
-  let result
-  const connectCmd = `terminus connection:info ${atkConfig.pantheon.site}.${atkConfig.pantheon.environment} --format=json`
+  // Construct the Terminus command. Remove "drush" from argument.
+  const remoteCmd = `terminus remote:drush ${atkConfig.pantheon.site}.${atkConfig.pantheon.environment} -- ${cmd.substring(5)}`
 
-  // Ask Terminus for SFTP command.
-  result = execSync(connectCmd, { encoding: 'utf8' })
-
-  const connections = JSON.parse(result)
-  const sftpConnection = connections.sftp_command
-  const envConnection = sftpConnection.replace('sftp -o Port=2222 ', '')
-
-  // Construct the command that will talk to the Pantheon server including
-  // the cmd argument.
-  const remoteCmd = `ssh -T ${envConnection} -p 2222 -o 'StrictHostKeyChecking=no' -o 'AddressFamily inet' 'drush ${cmd}'`
-
-  result = execSync(remoteCmd, { encoding: 'utf8' })
-
-  return result
+  cy.exec(remoteCmd, { failOnNonZeroExit: false, timeout: 20000 }).then((result) => {
+    output = result.stdout
+    console.log('cy.exec: ' + output)
+    return cy.wrap(output)
+  })
 })
 
 /**
@@ -213,12 +205,12 @@ Cypress.Commands.add('execPantheonDrush', (cmd) => {
  *
  * @returns {string} The Drush command i.e 'lando drush ', etc.
  */
-function getDrushAlias () {
+function getDrushAlias() {
   let cmd
 
   // Drush to Pantheon requires Terminus.
   if (atkConfig.pantheon.isTarget) {
-    cmd = 'terminus remote:drush ' + atkConfig.pantheon.site + '.' + atkConfig.pantheon.environment + ' -- '
+    cmd = 'drush '
   } else {
     // Fetch the Drush command appropriate to the operating mode.
     cmd = atkConfig.drushCmd + ' '
@@ -232,13 +224,16 @@ function getDrushAlias () {
 Cypress.Commands.add('getIframeBodyWithId', (iframeId) => {
   // Get the iframe > document > body
   // and retry until the body element is not empty
-  return cy
-    .get('iframe[id=mvActiveArea]')
-    .its('0.contentDocument.body').should('not.be.empty')
-    // Wraps “body” DOM element to allow
-    // chaining more Cypress commands, like “.find(...)”
-    // https://on.cypress.io/wrap
-    .then(cy.wrap)
+  return (
+    cy
+      .get('iframe[id=mvActiveArea]')
+      .its('0.contentDocument.body')
+      .should('not.be.empty')
+      // Wraps “body” DOM element to allow
+      // chaining more Cypress commands, like “.find(...)”
+      // https://on.cypress.io/wrap
+      .then(cy.wrap)
+  )
 })
 
 /**
@@ -299,37 +294,40 @@ Cypress.Commands.add('logInViaForm', (account) => {
 
   Cypress.session.clearAllSavedSessions()
 
-  cy.session(account.userName, () => {
-    cy.visit(logInUrl)
+  cy.session(
+    account.userName,
+    () => {
+      cy.visit(logInUrl)
 
-    // It is ok for the username to be visible in the Command Log.
-    // eslint-disable-next-line no-unused-expressions
-    expect(account.userName, 'username was set').to.be.a('string').and.not.be.empty
+      // It is ok for the username to be visible in the Command Log.
+      // eslint-disable-next-line no-unused-expressions
+      expect(account.userName, 'username was set').to.be.a('string').and.not.be.empty
 
-    // But the password value should not be shown.
-    if (typeof account.userPassword !== 'string' || !account.userPassword) {
-      throw new Error('Missing password value..')
-    }
-    cy.get('#edit-name').type(account.userName, { force: true })
+      // But the password value should not be shown.
+      if (typeof account.userPassword !== 'string' || !account.userPassword) {
+        throw new Error('Missing password value..')
+      }
+      cy.get('#edit-name').type(account.userName, { force: true })
 
-    // Type password and the password value should not be shown - {log: false}.
-    cy.get('#edit-pass').type(account.userPassword, { log: false, force: true })
+      // Type password and the password value should not be shown - {log: false}.
+      cy.get('#edit-pass').type(account.userPassword, { log: false, force: true })
 
-    // Click the log in button using ID.
-    cy.get('#edit-actions > #edit-submit').click({ force: true })
-    cy.get('head meta').then(console.log)
-  },
-  {
-    validate () {
-      cy.visit('')
-
-      // Confirm log in worked.
+      // Click the log in button using ID.
+      cy.get('#edit-actions > #edit-submit').click({ force: true })
       cy.get('head meta').then(console.log)
+    },
+    {
+      validate() {
+        cy.visit('')
 
-      // Optional.
-      // should('include.text', 'user')
+        // Confirm log in worked.
+        cy.get('head meta').then(console.log)
+
+        // Optional.
+        // should('include.text', 'user')
+      },
     }
-  })
+  )
 })
 
 /**
@@ -345,10 +343,9 @@ Cypress.Commands.add('logInViaUli', (uid) => {
 
   const cmd = `user:login --uid=${uid}`
 
-  cy.execDrush(cmd, [], ['--uri=' + Cypress.config('baseUrl')])
-    .then((result) => {
-      cy.visit(result)
-    })
+  cy.execDrush(cmd, [], ['--uri=' + Cypress.config('baseUrl')]).then((result) => {
+    cy.visit(result)
+  })
 })
 
 /**
