@@ -1,7 +1,7 @@
 INTRODUCTION
 -----------
 
-Automated Testing Kit is a set of useful utilities for end-to-end testing 
+Automated Testing Kit is a set of useful utilities for end-to-end testing
 using Cypress.io and Playwright.
 
 DESCRIPTION
@@ -9,16 +9,12 @@ DESCRIPTION
 
 Automated Testing Kit provides functions such as:
 
-- basic login/logout via the UI and API stored sessions
+- basic login/logout via the UI
 - registration and confirmation of the email via a fake SMTP service (ethereal.email)
-- same for forgetting a password
-- confirming each entry in sitemap.xml
 - awareness of the QA Accounts module
-- access to the translation dictionary t() from within a test
-- executing drush commands via aliases or to Pantheon via Terminus (needed for 
-  setup and teardown)
+- executing drush commands via aliases or to Pantheon via Terminus
 
-And this will work on the native OS (i.e. macOS/Linux), native OS + a container 
+And this will work on the native OS (i.e. macOS/Linux), native OS + a container
 (via DDEV/Lando/Docksal) or within a container.
 
 REQUIREMENTS
