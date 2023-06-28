@@ -7,6 +7,7 @@ module.exports = {
   registerUrl: "user/register",
   logInUrl: "user/login",
   logOutUrl: "user/logout",
+  resetPasswordUrl: "user/password",
   authDir: "cypress/support",
   dataDir: "cypress/data",
   supportDir: "cypress/support",
@@ -15,5 +16,5 @@ module.exports = {
     isTarget: false,
     site: "aSite",
     environment: "dev"
-  }
+    }
 }
