@@ -188,7 +188,7 @@ function execDrush (cmd, args = [], options = []) {
   } else {
     try {
       output = execSync(command)
-      console.log('execSync: ' + output)
+      console.log('execDrush result: ' + output)
     } catch (error) {
       // Soak up error.
       console.log(`Error: ${error.message}`)
@@ -215,7 +215,7 @@ function execPantheonDrush (cmd) {
   try {
     result = execSync(remoteCmd)
   } catch (error) {
-    console.log("execSyn: " + error)
+    console.log("execPantheonDrush result: " + error)
   }
 
   return result
