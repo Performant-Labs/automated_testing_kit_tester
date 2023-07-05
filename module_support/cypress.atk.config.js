@@ -8,6 +8,7 @@ module.exports = {
   logInUrl: "user/login",
   logOutUrl: "user/logout",
   resetPasswordUrl: "user/password",
+  contactUsUrl: "form/contact",
   authDir: "cypress/support",
   dataDir: "cypress/data",
   supportDir: "cypress/support",

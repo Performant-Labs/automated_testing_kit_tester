@@ -8,6 +8,7 @@ module.exports = {
   logInUrl: "user/login",
   logOutUrl: "user/logout",
   resetPasswordUrl: "user/password",
+  contactUsUrl: "form/contact",
   authDir: "tests/support",
   dataDir: "tests/data",
   supportDir: "tests/support",

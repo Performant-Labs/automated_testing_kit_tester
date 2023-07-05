@@ -309,9 +309,7 @@ Cypress.Commands.add('logInViaForm', (account) => {
 
   Cypress.session.clearAllSavedSessions()
 
-  cy.session(
-    account.userName,
-    () => {
+  cy.session(account.userName, () => {
       cy.visit(logInUrl)
 
       // It is ok for the username to be visible in the Command Log.

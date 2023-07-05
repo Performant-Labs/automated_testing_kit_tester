@@ -10,3 +10,9 @@ Changes since 1.0.0-beta1:
 - Added resetPasswordUrl to atkConfig.
 - In Cypress, switched from execPantheonDrush:remote:drush to ssh tunnel.
 - In Cypress, switched to cy.log.
+
+Automated Testing Kit 1.0.0-beta3, 2023-07-05
+---------------------------------------------
+Changes since 1.0.0-beta2:
+- Added contact us tests (ATK-CY-1050, ATK-PW-1050).
+- Added contactUsURL to atkConfig.
