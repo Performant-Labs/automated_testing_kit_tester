@@ -174,7 +174,7 @@ test.describe('User registration and login tasks.', () => {
   //
   // Validate Contact us.
   //
-  test('(ATK-PW-1050) Reset password. @ATK-PW-1050 @contact-us @smoke', async ({ page, context }) => {
+  test('(ATK-PW-1050) Contact Us form accepts input, sends email. @ATK-PW-1050 @contact-us @smoke', async ({ page, context }) => {
     const uniqueToken = atkUtilities.createRandomString(6)
     const testId = '(ATK-PW-1050)'
     const subjectLine = testId + ' ' + uniqueToken

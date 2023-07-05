@@ -176,7 +176,7 @@ describe('User registration and login tasks.', () => {
   //
   // Validate Contact us.
   //
-  it.only("(ATK-CY-1050) Contact Us form accepts input, sends email.", {tags: ['ATK-CY-1050', 'register-login', 'smoke'] }, () => {
+  it.only("(ATK-CY-1050) Contact Us form accepts input, sends email.", {tags: ['ATK-CY-1050', 'contact-us', 'smoke'] }, () => {
     const uniqueToken = atkUtilities.createRandomString(6)
     const testId = '(ATK-CY-1050)'
     const subjectLine = testId + ' ' + uniqueToken
