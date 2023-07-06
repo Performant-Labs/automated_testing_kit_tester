@@ -187,11 +187,10 @@ function execDrush (cmd, args = [], options = []) {
     return execPantheonDrush(command) // Returns stdout (not wrapped).
   } else {
     try {
-      output = execSync(command)
+      output = execSync(command).toString()
       console.log('execDrush result: ' + output)
     } catch (error) {
-      // Soak up error.
-      console.log(`Error: ${error.message}`)
+      console.log(`execDrush error: ${error.message}`)
     }
   }
 
@@ -214,8 +213,9 @@ function execPantheonDrush (cmd) {
   result = ''
   try {
     result = execSync(remoteCmd)
+    console.log("execPantheonDrush result: " + result)
   } catch (error) {
-    console.log("execPantheonDrush result: " + error)
+    console.log("execPantheonDrush error: " + error)
   }
 
   return result
@@ -324,9 +324,6 @@ async function logInViaUli (page, context, uid) {
 
   if (uid === undefined) uid = 1
 
-  cmd = playwrightConfig.use.baseURL + '/' + atkConfig.logOutUrl
-  await page.goto(cmd)
-
   cmd = `user:login --uid=${uid}`
   url = execDrush(cmd, [], ['--uri=' + playwrightConfig.use.baseURL])
 
@@ -339,7 +336,7 @@ async function logInViaUli (page, context, uid) {
  * @param {object} page Page object.
  */
 async function logOutViaUi (page, context) {
-  const cmd = playwrightConfig.use.baseURL + '/' + atkConfig.logOutUrl
+  const cmd = playwrightConfig.use.baseURL + atkConfig.logOutUrl
 
   await page.goto(cmd)
 }
