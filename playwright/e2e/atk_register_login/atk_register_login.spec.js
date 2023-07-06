@@ -43,6 +43,9 @@ test.describe('User registration and login tasks.', () => {
     await page.getByLabel('Username').fill(extendedUserName)
     await page.getByRole('button', { name: 'Create new account' }).click()
 
+    // The status box needs a moment to appear.
+    await page.waitForSelector('[aria-label="Status message"]');
+
     // Should see the thank-you message.
     textContent = await page.content()
     expect(textContent).toContain('Thank you for applying for an account.')
@@ -136,6 +139,9 @@ test.describe('User registration and login tasks.', () => {
 
     await page.getByLabel('Username').fill(extendedUserName)
     await page.getByRole('button', { name: 'Submit' }).click()
+
+    // The status box needs a moment to appear.
+    await page.waitForSelector('[aria-label="Status message"]');
 
     // Check for tail end of reset message.
     let textContent = await page.content()
