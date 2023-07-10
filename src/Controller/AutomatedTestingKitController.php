@@ -9,7 +9,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteProvider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-
 /**
  * Controller for Automated Testing Kit.
  */

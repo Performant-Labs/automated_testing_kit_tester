@@ -1,13 +1,11 @@
 <?php
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
-
 /**
  * @file
  * Contains automated_testing_kit.module.
  */
 
- /**
+/**
  * Implements hook_help().
  *
  * @param $route_name
