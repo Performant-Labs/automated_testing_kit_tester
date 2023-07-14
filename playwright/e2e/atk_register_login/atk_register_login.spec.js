@@ -101,7 +101,7 @@ test.describe('User registration and login tasks.', () => {
   //
   // Create a user with Drush from a fixture and delete it.
   //
-  test('(ATK-PW-1020) Create and delete user with Drush. @ATK-PW-1020 @register-login @smoke', async ({ page }) => {
+  test('(ATK-PW-1020) Create and delete user with Drush. @ATK-PW-1020 @register-login @smoke @alters-db', async ({ page }) => {
     await atkCommands.deleteUserWithEmail(userEtherealAccount.userEmail, ['--delete-content'])
     await atkCommands.createUserWithUserObject(userEtherealAccount, [])
     await atkCommands.deleteUserWithUserName(userEtherealAccount.userName, [], ['--delete-content'])
@@ -110,7 +110,7 @@ test.describe('User registration and login tasks.', () => {
   //
   // Create a user with Drush from a fixture and delete it by UID.
   //
-  test('(ATK-PW-1021) Create user with Drush, delete by UID.  @ATK-PW-1021 @register-login @smoke', async ({ page }) => {
+  test('(ATK-PW-1021) Create user with Drush, delete by UID.  @ATK-PW-1021 @register-login @smoke @alters-db', async ({ page }) => {
     await atkCommands.deleteUserWithEmail(userEtherealAccount.userEmail, ['--delete-content'])
     await atkCommands.createUserWithUserObject(userEtherealAccount, [])
     const uid = await atkCommands.getUidWithEmail(userEtherealAccount.userEmail)

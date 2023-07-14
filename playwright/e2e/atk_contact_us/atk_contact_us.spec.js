@@ -29,7 +29,7 @@ test.describe('Contact Us tests.', () => {
   //
   // Validate Contact us.
   //
-  test('(ATK-PW-1050)  Contact Us form accepts input, sends email. @ATK-PW-1050 @contact-us @smoke', async ({ page, context }) => {
+  test('(ATK-PW-1050)  Contact Us form accepts input, sends email. @ATK-PW-1050 @contact-us @smoke @alters-db', async ({ page, context }) => {
     const uniqueToken = atkUtilities.createRandomString(6)
     const testId = '(ATK-PW-1050)'
     const subjectLine = testId + ' ' + uniqueToken
@@ -43,6 +43,9 @@ test.describe('Contact Us tests.', () => {
     await page.getByLabel('Subject').fill(subjectLine)
     await page.getByLabel('Message').fill(testId)
     await page.getByRole('button', { name: 'Send message' }).click()
+
+    // The status box needs a moment to appear.
+    await page.waitForSelector('[aria-label="Status message"]');
 
     // Should see the thank-you message.
     textContent = await page.content()

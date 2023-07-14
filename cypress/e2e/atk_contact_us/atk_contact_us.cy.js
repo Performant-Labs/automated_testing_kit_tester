@@ -5,6 +5,9 @@
  *
  */
 
+/** ESLint directives */
+/* eslint-disable import/first */
+
 /// <reference types='Cypress' />
 
 import * as atkCommands from '../../support/atk_commands.js'
@@ -25,7 +28,7 @@ describe('Contact Us tests.', () => {
   //
   // Validate Contact us.
   //
-  it("(ATK-CY-1050) Contact Us form accepts input, sends email.", {tags: ['ATK-CY-1050', 'contact-us', 'smoke'] }, () => {
+  it("(ATK-CY-1050) Contact Us form accepts input, sends email.", {tags: ['@ATK-CY-1050', '@contact-us', '@smoke', '@alters-db'] }, () => {
     const uniqueToken = atkUtilities.createRandomString(6)
     const testId = '(ATK-CY-1050)'
     const subjectLine = testId + ' ' + uniqueToken
