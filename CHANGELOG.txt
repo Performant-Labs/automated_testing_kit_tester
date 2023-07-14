@@ -2,7 +2,7 @@ Automated Testing Kit 1.0.0-beta4, 2023-07-14
 ---------------------------------------------
 Changes since 1.0.0-beta3:
 - Added 404 error page test (ATK-CY-1060, ATK-PW-1060) and documentation.
-- Added drupal/default_content to composer.json.
+- Added @ to Cypress tags; added @alters-db where needed.
 
 Automated Testing Kit 1.0.0-beta3, 2023-07-06
 ---------------------------------------------
