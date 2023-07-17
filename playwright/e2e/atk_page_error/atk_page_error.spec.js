@@ -27,23 +27,33 @@ import qaUserAccounts from '../data/qaUsers.json'
 
 test.describe('Page error tests.', () => {
   //
-  // Validate 403 page appears.
+  // Validate that 403 page appears.
   // Assumes:
+  // Create a basic page with alias of "403-error-page" that has text content below.
   // admin/config/system/site-information:Default 403 (access denied) page = /403-error-page
   //
-  test('(ATK-PW-1060) Validate 403 page appears. @ATK-PW-1060 @page-error @smoke', async ({ page, context }) => {
+  test('(ATK-PW-1060) Validate that 403 page appears. @ATK-PW-1060 @page-error @smoke', async ({ page, context }) => {
     const testId = 'ATK-PW-1060'
+    const badAnonymousUrl = "admin"
 
-    // TODO: This is a stub for now.
+    console.log('Pull up access denied page for anonymous user with Url of ' + badAnonymousUrl + '.')
+
+    await atkCommands.logOutViaUi(page, context)
+    await page.goto(badAnonymousUrl)
+
+    // Should see the 403 message.
+    let textContent = ''
+    textContent = await page.content()
+    expect(textContent).toContain('403 error page')
   })
 
   //
-  // Validate 404 page appears.
+  // Validate that 404 page appears.
   // Assumes:
-  // Create a basic page with alias of "404-error-page".
+  // Create a basic page with alias of "404-error-page" that has text content below.
   // Set admin/config/system/site-information:Default 404 (not found) page = /404-error-page
   //
-  test('(ATK-PW-1061) Validate 404 page appears. @ATK-PW-1061 @page-error @smoke', async ({ page, context }) => {
+  test('(ATK-PW-1061) Validate that 404 page appears. @ATK-PW-1061 @page-error @smoke', async ({ page, context }) => {
     const testId = 'ATK-PW-1061'
     const randomString = atkUtilities.createRandomString(6)
     const badAnonymousUrl = testId + '-BadAnonymousPage-' + randomString

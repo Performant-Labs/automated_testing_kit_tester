@@ -26,31 +26,48 @@ import qaUserAccounts from '../../data/qaUsers.json'
 
 describe('Page error tests.', () => {
   //
-  // Validate 404 page appears.
+  // Validate that 403 page appears.
   // Assumes:
+  // Create a basic page with alias of "403-error-page" that has text content below.
   // admin/config/system/site-information: Default 403 (access denied) page = /403-error-page
-  // admin/config/system/site-information: Default Default 404 (not found) page = /404-error-page
   //
-  it('(ATK-CY-1061) Validate 404 page appears.', {tags: ['@ATK-CY-1061', '@page-error', '@smoke'] }, () => {
-    const randomString = atkUtilities.createRandomString(6)
-    // debugger
-    const anonymousBadUrl = 'ATK-CY-1060-BadAnonymousPage-' + randomString
-    const authenticatedBadUrl = 'ATK-CY-1060-BadAuthenticatedPage-' + randomString
-    const testId = '(ATK-CY-1061)'
+  it('(ATK-CY-1060) Validate that 403 page appears.', {tags: ['@ATK-CY-1060', '@page-error', '@smoke'] }, () => {
+    const testId = 'ATK-CY-1060'
+    const badAnonymousUrl = 'admin'
 
-    cy.log('**Pull up bad page for anonymous user with Url of ' + anonymousBadUrl + '.**')
+    cy.log('**Pull up access denied page for anonymous user with Url of ' + badAnonymousUrl + '.**')
 
     cy.logOutViaUi()
 
-    cy.visit(anonymousBadUrl, {failOnStatusCode: false})
-    cy.contains("ATK Error Page")
+    cy.visit(badAnonymousUrl, {failOnStatusCode: false})
+    cy.contains("403 error page")
+  })
 
-    cy.log('**Pull up bad page for authenticated user with Url of ' + authenticatedBadUrl + '.**')
+  //
+  // Validate that 404 page appears.
+  // Assumes:
+  // Create a basic page with alias of "404-error-page" that has text content below.
+  // admin/config/system/site-information: Default Default 404 (not found) page = /404-error-page
+  //
+  it('(ATK-CY-1061) Validate that 404 page appears.', {tags: ['@ATK-CY-1061', '@page-error', '@smoke'] }, () => {
+    const testId = 'ATK-CY-1061'
+    const randomString = atkUtilities.createRandomString(6)
+    const badAnonymousUrl = testId + '-BadAnonymousPage-' + randomString
+    const badAuthenticatedUrl = testId + '-BadAuthenticatedPage-' + randomString
+
+    cy.log('**Pull up bad page for anonymous user with Url of ' + badAnonymousUrl + '.**')
+
+    cy.logOutViaUi()
+
+    cy.visit(badAnonymousUrl, {failOnStatusCode: false})
+    cy.contains("404 error page")
+
+    cy.log('**Pull up bad page for authenticated user with Url of ' + badAuthenticatedUrl + '.**')
 
     cy.logOutViaUi()
     cy.logInViaForm(qaUserAccounts.authenticated)
 
-    cy.visit(anonymousBadUrl, {failOnStatusCode: false})
-    cy.contains("ATK Error Page")
+    cy.visit(badAuthenticatedUrl, {failOnStatusCode: false})
+    cy.contains("404 erro page")
   })
 })
