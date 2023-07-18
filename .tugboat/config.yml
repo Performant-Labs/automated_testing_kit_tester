@@ -48,11 +48,11 @@ services:
         # - zcat project/database/performant-labs_dev.sql.gz | mysql -h mysql -utugboat -ptugboat tugboat
 
         # Create the database.
-        - mysql -u root -p -e "CREATE DATABASE tugboat; CREATE USER 'tugboat'@'localhost' IDENTIFIED BY 'password'; GRANT ALL ON tugboat.* TO 'tugboat'@'localhost';"
+        # - mysql -h mysql -utugboat -ptugboat -e "CREATE DATABASE tugboat; CREATE USER 'tugboat'@'localhost' IDENTIFIED BY 'password'; GRANT ALL ON tugboat.* TO 'tugboat'@'localhost';"
 
         # Move composer into position and download core + contrib modules.
         - mv module_support/development/composer.json .
-        - composer update --optimize-autoloader
+        # - composer update --optimize-autoloader
 
         # Set file permissions such that Drupal will not complain
         - mkdir -p "${DOCROOT}/sites/default/files"
@@ -68,13 +68,13 @@ services:
         - cp "${TUGBOAT_ROOT}/.tugboat/settings.tugboat.php" "${DOCROOT}/sites/default/settings.local.php"
 
         # Create the website.
-        - vendor/bin/drush site:install --account-name=admin --account-pass=password --site-name="Automated Testing Kit Tester"
+        # - vendor/bin/drush site:install --account-name=admin --account-pass=password --site-name="Automated Testing Kit Tester"
 
         # Move automated_testing_kit into position.
 
         # Enable the modules we need.
         #- ${TUGBOAT_ROOT}/scripts/promote-admins.sh
-        - vendor/bin/drush en -y qa_accounts admin_toolbar coffee gin symfony_mailer webform
+        # - vendor/bin/drush en -y qa_accounts admin_toolbar coffee gin symfony_mailer webform
 
         # Set up error capture.
         - touch /var/log/php-error.log && chown www-data:www-data /var/log/php-error.log
