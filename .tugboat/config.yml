@@ -47,22 +47,19 @@ services:
         # Import the database.
         # - zcat project/database/performant-labs_dev.sql.gz | mysql -h mysql -utugboat -ptugboat tugboat
 
-        # Create the database.
-        # - mysql -h mysql -utugboat -ptugboat -e "CREATE DATABASE tugboat; CREATE USER 'tugboat'@'localhost' IDENTIFIED BY 'password'; GRANT ALL ON tugboat.* TO 'tugboat'@'localhost';"
-
         # Move composer into position and download core + contrib modules.
         - mv module_support/development/composer.json .
-        # - composer update --optimize-autoloader
+        - composer update --optimize-autoloader
 
         # Set file permissions such that Drupal will not complain
-        # - mkdir -p "${DOCROOT}/sites/default/files"
-        # - chgrp -R www-data "${DOCROOT}/sites/default/files"
-        # - find "${DOCROOT}/sites/default/files" -type d -exec chmod 2775 {} \;
-        # - find "${DOCROOT}/sites/default/files" -type f -exec chmod 0664 {} \;
-        # - mkdir -p "${DOCROOT}/sites/default/files-private"
-        # - chgrp -R www-data "${DOCROOT}/sites/default/files-private"
-        # - find "${DOCROOT}/sites/default/files-private" -type d -exec chmod 2775 {} \;
-        # - find "${DOCROOT}/sites/default/files-private" -type f -exec chmod 0664 {} \;
+        - mkdir -p "${DOCROOT}/sites/default/files"
+        - chgrp -R www-data "${DOCROOT}/sites/default/files"
+        - find "${DOCROOT}/sites/default/files" -type d -exec chmod 2775 {} \;
+        - find "${DOCROOT}/sites/default/files" -type f -exec chmod 0664 {} \;
+        - mkdir -p "${DOCROOT}/sites/default/files-private"
+        - chgrp -R www-data "${DOCROOT}/sites/default/files-private"
+        - find "${DOCROOT}/sites/default/files-private" -type d -exec chmod 2775 {} \;
+        - find "${DOCROOT}/sites/default/files-private" -type f -exec chmod 0664 {} \;
 
         # Use the Tugboat-specific Drupal settings.
         # - cp "${TUGBOAT_ROOT}/.tugboat/settings.tugboat.php" "${DOCROOT}/sites/default/settings.local.php"
