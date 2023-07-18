@@ -2,9 +2,6 @@ name: (Test) App on Tugboat Playwright on GHA
 run-name: ${{ github.actor }} is triggering a Tugboat preview and Playwright tests.
 
 on:
-  push:
-    paths:
-      - .github/workflows/tugboat-preview-testery.yml
   workflow_dispatch:
 
 env:
