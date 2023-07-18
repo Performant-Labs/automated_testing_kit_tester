@@ -1,0 +1,51 @@
+name: (Test) App on Tugboat Playwright on GHA
+run-name: ${{ github.actor }} is triggering a Tugboat preview and Playwright tests.
+
+on:
+  push:
+    paths:
+      - .github/workflows/tugboat-preview-testery.yml
+  workflow_dispatch:
+
+env:
+  # Repo ID comes from 'tugboat ls repos'
+  tugboat_repo_id: 63fe5557d5af549afd35a86a
+
+jobs:
+  Run-Testery-On-Tugboat-Preview:
+    name: Trigger Tugboat Preview
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "For site $pantheon_site_name.$pantheon_env."
+      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+      - name: Install Tugboat.
+        run: |
+          curl -O https://dashboard.tugboatqa.com/cli/linux/tugboat.tar.gz
+          tar -zxf tugboat.tar.gz
+
+      - name: Delete prior preview.
+        run: |
+          ./tugboat ls previews --json --api-token ${{ secrets.TUGBOAT_TOKEN }}
+          ./tugboat ls previews --json --api-token ${{ secrets.TUGBOAT_TOKEN }}  > previews.json
+          PREVIEW_ID=`jq -r '.[0].preview' previews.json`
+
+          if [ ${PREVIEW_ID} != "null" ]; then
+            echo "Deleting preview ${PREVIEW_ID}."
+            ./tugboat delete ${PREVIEW_ID} --api-token ${{ secrets.TUGBOAT_TOKEN }}
+          fi
+
+      # - name: Create the preview.
+      #   run: |
+      #     RUN_DATE=`date "+%Y-%m-%d %H:%M:%S"`
+      #     echo "Creating preview on Tugboat."
+      #     ./tugboat create preview "main" \
+      #       base=false repo=${{ env.tugboat_repo_id }} label="Branch:main $RUN_DATE" output=json --api-token ${{ secrets.TUGBOAT_TOKEN }}
+
+
+      # - name: Run Playwright tests.
+      #   run: |
+      #     RUN_DATE=`date "+%Y-%m-%d %H:%M:%S"`
+      #     echo "Running tests."
+
