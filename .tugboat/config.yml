@@ -48,7 +48,7 @@ services:
         # - zcat project/database/performant-labs_dev.sql.gz | mysql -h mysql -utugboat -ptugboat tugboat
 
         # Create the database.
-        mysql -u root -p -e "CREATE DATABASE tugboat; CREATE USER 'tugboat'@'localhost' IDENTIFIED BY 'password'; GRANT ALL ON tugboat.* TO 'tugboat'@'localhost';"
+        - mysql -u root -p -e "CREATE DATABASE tugboat; CREATE USER 'tugboat'@'localhost' IDENTIFIED BY 'password'; GRANT ALL ON tugboat.* TO 'tugboat'@'localhost';"
 
         # Move composer into position and download core + contrib modules.
         - mv module_support/development/composer.json .
