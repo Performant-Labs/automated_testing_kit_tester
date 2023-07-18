@@ -33,12 +33,12 @@ jobs:
             ./tugboat delete ${PREVIEW_ID} --api-token ${{ secrets.TUGBOAT_TOKEN }}
           fi
 
-      # - name: Create the preview.
-      #   run: |
-      #     RUN_DATE=`date "+%Y-%m-%d %H:%M:%S"`
-      #     echo "Creating preview on Tugboat."
-      #     ./tugboat create preview "main" \
-      #       base=false repo=${{ env.tugboat_repo_id }} label="Branch:main $RUN_DATE" output=json --api-token ${{ secrets.TUGBOAT_TOKEN }}
+      - name: Create the preview.
+        run: |
+          RUN_DATE=`date "+%Y-%m-%d %H:%M:%S"`
+          echo "Creating preview on Tugboat."
+          ./tugboat create preview "main" \
+            base=false repo=${{ env.tugboat_repo_id }} label="Branch:main $RUN_DATE" output=json --api-token ${{ secrets.TUGBOAT_TOKEN }}
 
 
       # - name: Run Playwright tests.
