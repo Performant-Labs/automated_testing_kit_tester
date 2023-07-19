@@ -41,6 +41,10 @@ services:
         - sed -e '9,13 s/#//' -i ~/.bashrc
         - sed -e '16,19 s/#//' -i ~/.bashrc
 
+        # Move automated_testing_kit into position.
+        - mkdir -p web/modules/contrib/automated_testing_kit
+        - cp * web/modules/contrib/automated_testing_kit/
+
       update:
         - echo "===== Apache/PHP Update ====="
 
@@ -48,26 +52,24 @@ services:
         # - zcat project/database/performant-labs_dev.sql.gz | mysql -h mysql -utugboat -ptugboat tugboat
 
         # Move composer into position and download core + contrib modules.
-        - mv module_support/development/composer.json .
-        - composer update --optimize-autoloader
+        # - mv module_support/development/composer.json .
+        # - composer update --optimize-autoloader
 
         # Set file permissions such that Drupal will not complain
-        - mkdir -p "${DOCROOT}/sites/default/files"
-        - chgrp -R www-data "${DOCROOT}/sites/default/files"
-        - find "${DOCROOT}/sites/default/files" -type d -exec chmod 2775 {} \;
-        - find "${DOCROOT}/sites/default/files" -type f -exec chmod 0664 {} \;
-        - mkdir -p "${DOCROOT}/sites/default/files-private"
-        - chgrp -R www-data "${DOCROOT}/sites/default/files-private"
-        - find "${DOCROOT}/sites/default/files-private" -type d -exec chmod 2775 {} \;
-        - find "${DOCROOT}/sites/default/files-private" -type f -exec chmod 0664 {} \;
+        # - mkdir -p "${DOCROOT}/sites/default/files"
+        # - chgrp -R www-data "${DOCROOT}/sites/default/files"
+        # - find "${DOCROOT}/sites/default/files" -type d -exec chmod 2775 {} \;
+        # - find "${DOCROOT}/sites/default/files" -type f -exec chmod 0664 {} \;
+        # - mkdir -p "${DOCROOT}/sites/default/files-private"
+        # - chgrp -R www-data "${DOCROOT}/sites/default/files-private"
+        # - find "${DOCROOT}/sites/default/files-private" -type d -exec chmod 2775 {} \;
+        # - find "${DOCROOT}/sites/default/files-private" -type f -exec chmod 0664 {} \;
 
         # Use the Tugboat-specific Drupal settings.
         # - cp "${TUGBOAT_ROOT}/.tugboat/settings.tugboat.php" "${DOCROOT}/sites/default/settings.local.php"
 
         # Create the website.
-        # - vendor/bin/drush site:install --account-name=admin --account-pass=password --site-name="Automated Testing Kit Tester"
-
-        # Move automated_testing_kit into position.
+        # - vendor/bin/drush site:install --debug --yes --db-url=mysql://tugboat:tugboat@mysql/tugboat --account-name=tugboat --account-pass=tugboat --site-name="Automated Testing Kit Tester"
 
         # Enable the modules we need.
         #- ${TUGBOAT_ROOT}/scripts/promote-admins.sh
