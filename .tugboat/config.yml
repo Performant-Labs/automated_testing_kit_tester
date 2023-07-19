@@ -41,6 +41,9 @@ services:
         - sed -e '9,13 s/#//' -i ~/.bashrc
         - sed -e '16,19 s/#//' -i ~/.bashrc
 
+        # Move composer into position.
+        - mv module_support/development/composer.json .
+
         # Copy automated_testing_kit into position.
         - mkdir -p web/modules/contrib/automated_testing_kit
         - rsync -av --remove-source-files --exclude='web' . web/modules/contrib/automated_testing_kit/
@@ -54,8 +57,7 @@ services:
         # Import the database.
         # - zcat project/database/performant-labs_dev.sql.gz | mysql -h mysql -utugboat -ptugboat tugboat
 
-        # Move composer into position and download core + contrib modules.
-        - mv module_support/development/composer.json .
+        # Download core + contrib modules.
         - composer update --optimize-autoloader
 
         # Set file permissions such that Drupal will not complain
