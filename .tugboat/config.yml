@@ -78,7 +78,7 @@ services:
 
         # Enable the modules we need.
         #- ${TUGBOAT_ROOT}/scripts/promote-admins.sh
-        - vendor/bin/drush en -y qa_accounts admin_toolbar coffee gin symfony_mailer webform
+        - vendor/bin/drush en -y qa_accounts admin_toolbar coffee symfony_mailer webform
 
         # Set up error capture.
         - touch /var/log/php-error.log && chown www-data:www-data /var/log/php-error.log
