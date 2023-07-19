@@ -71,7 +71,7 @@ services:
         - find "${DOCROOT}/sites/default/files-private" -type f -exec chmod 0664 {} \;
 
         # Use the Tugboat-specific Drupal settings.
-        - cp "${TUGBOAT_ROOT}/.tugboat/settings.tugboat.php" "${DOCROOT}/sites/default/settings.local.php"
+        - cp "${TUGBOAT_ROOT}/web/modules/contrib/automated_testing_kit/.tugboat/settings.tugboat.php" "${DOCROOT}/sites/default/settings.local.php"
 
         # Create the website.
         - vendor/bin/drush site:install --debug --yes --db-url=mysql://tugboat:tugboat@mysql/tugboat --account-name=tugboat --account-pass=tugboat --site-name="Automated Testing Kit Tester"
