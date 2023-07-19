@@ -46,7 +46,7 @@ services:
 
         # Copy automated_testing_kit into position.
         - mkdir -p web/modules/contrib/automated_testing_kit
-        - rsync -av --remove-source-files --exclude='web' . web/modules/contrib/automated_testing_kit/
+        - rsync -av --remove-source-files --exclude='web' --exclude="composer.json" . web/modules/contrib/automated_testing_kit/
 
         # Delete all empty directories.
         - find . -type d -empty -delete
