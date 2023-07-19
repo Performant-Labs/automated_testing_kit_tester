@@ -41,9 +41,12 @@ services:
         - sed -e '9,13 s/#//' -i ~/.bashrc
         - sed -e '16,19 s/#//' -i ~/.bashrc
 
-        # Move automated_testing_kit into position.
+        # Copy automated_testing_kit into position.
         - mkdir -p web/modules/contrib/automated_testing_kit
-        - cp * web/modules/contrib/automated_testing_kit/
+        - rsync -av --remove-source-files --exclude='web' . web/modules/contrib/automated_testing_kit/
+
+        # Delete all empty directories.
+        - find . -type d -empty -delete
 
       update:
         - echo "===== Apache/PHP Update ====="
